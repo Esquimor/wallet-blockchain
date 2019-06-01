@@ -26,7 +26,6 @@
       <Block class="Home-block" :block="block"/>
     </div>
     <div class="Home-block-no" v-else>Aucun Block séléctionner</div>
-    <div class="Home-block-no" v-else>Aucun Block séléctionner</div>
     <div class="Home-address" v-if="giveAddress">
       <div class="Home-address-background"/>
       <div class="Home-address-modal">
