@@ -1,21 +1,21 @@
 <template>
   <div class="Blocks">
     <h3 class="title is-5">Block: {{ block.index }}</h3>
-    <div class="Blocks-date">
-      <span class="Blocks-date-label">Date:</span>
-      <span class="Blocks-date-item">{{ formatedDate }}</span>
+    <div class="Blocks-elements">
+      <span class="Blocks-labels">Date:</span>
+      <span>{{ formatedDate }}</span>
     </div>
-    <div class="Blocks-date">
-      <span class="Blocks-date-label">Difficulté:</span>
-      <span class="Blocks-date-item">{{ block.difficulty }}</span>
+    <div class="Blocks-elements">
+      <span class="Blocks-labels">Difficulté:</span>
+      <span>{{ block.difficulty }}</span>
     </div>
-    <div class="Blocks-hash">
-      <span class="Blocks-hash-label">Hash:</span>
-      <span class="Blocks-hash-item">{{ block.hash }}</span>
+    <div class="Blocks-elements">
+      <span class="Blocks-labels">Hash:</span>
+      <span class="Blocks-items">{{ block.hash }}</span>
     </div>
-    <div class="Blocks-previoushash">
-      <span class="Blocks-previoushash-label">Hash précédent:</span>
-      <span class="Blocks-previoushash-item">{{ block.previousHash }}</span>
+    <div class="Blocks-elements">
+      <span class="Blocks-labels">Hash précédent:</span>
+      <span class="Blocks-items">{{ block.previousHash }}</span>
     </div>
   </div>
 </template>
@@ -50,31 +50,19 @@ export default {
   padding: 1rem;
   border: 3px solid $light-grey;
   border-radius: 25px;
-  &-date {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    &-item {
-      margin-left: 10px;
-    }
+  &-labels {
+    font-weight: 700;
+    min-width: 90px;
+    max-width: 90px;
   }
-  &-hash {
+  &-elements {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    &-item {
-      word-break: break-all;
-      margin-left: 10px;
-    }
+    margin-bottom: 5px;
   }
-  &-previoushash {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    &-item {
-      word-break: break-all;
-      margin-left: 10px;
-    }
+  &-items {
+    word-break: break-all;
   }
 }
 </style>

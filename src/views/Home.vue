@@ -12,14 +12,21 @@
       </div>
     </div>
     <div class="Home-chain">
-      <Blocks
-        v-for="block in listChain"
-        :key="block.index"
-        :block="block"
-        @click.native="chooseBlock(block)"
-      />
+      <template v-if="listChain.length > 0">
+        <Blocks
+          v-for="block in listChain"
+          :key="block.index"
+          :block="block"
+          @click.native="chooseBlock(block)"
+        />
+      </template>
+      <div v-else>Aucun Block dans la chaine</div>
     </div>
-    <Block class="Home-block" :block="block"/>
+    <div v-if="block !== null">
+      <Block class="Home-block" :block="block"/>
+    </div>
+    <div class="Home-block-no" v-else>Aucun Block séléctionner</div>
+    <div class="Home-block-no" v-else>Aucun Block séléctionner</div>
     <div class="Home-address" v-if="giveAddress">
       <div class="Home-address-background"/>
       <div class="Home-address-modal">
@@ -191,6 +198,7 @@ export default {
   width: 100%;
   height: 100%;
   &-filter {
+    background-color: #aed581;
     padding: 1rem;
     grid-area: filter;
   }
@@ -199,6 +207,14 @@ export default {
   }
   &-block {
     grid-area: block;
+    position: sticky;
+    top: 20px;
+    &-no {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
   }
   &-address {
     display: flex;
