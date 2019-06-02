@@ -23,7 +23,7 @@
       <div v-else>Aucun Block dans la chaine</div>
     </div>
     <div v-if="block !== null">
-      <Block class="Home-block" :block="block"/>
+      <Block class="Home-block" :block="block" @change="hash => chooseBlockHash(hash)"/>
     </div>
     <div class="Home-block-no" v-else>Aucun Block séléctionner</div>
     <div class="Home-address" v-if="giveAddress">
@@ -123,6 +123,15 @@ export default {
           );
         })
         .reverse();
+    },
+    listNode() {
+      return this.chain.reduce((tab, block) => {
+        const tabHasNode = tab.some(t => t === block.node);
+        if (!tabHasNode) {
+          tab.push(block.node);
+        }
+        return tab;
+      }, []);
     }
   },
   methods: {
@@ -136,6 +145,9 @@ export default {
     },
     chooseBlock(block) {
       this.block = block;
+    },
+    chooseBlockHash(hash) {
+      this.block = this.chain.find(b => b.hash === hash);
     }
   },
   watch: {
@@ -157,13 +169,15 @@ export default {
               };
               ws.onmessage = e => {
                 const data = JSON.parse(e.data);
-                const element = JSON.parse(data.data);
+                let element;
                 switch (data.type) {
                   case MessageType.QUERY_ALL:
+                    element = JSON.parse(data.data);
                     this.chain = element;
                     break;
                   case MessageType.RESPONSE_BLOCKCHAIN:
                   case MessageType.QUERY_LATEST:
+                    element = JSON.parse(data.data);
                     if (this.chain.length === 0) {
                       this.chain = element;
                     } else {

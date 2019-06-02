@@ -10,6 +10,10 @@
       <span>{{ block.difficulty }}</span>
     </div>
     <div class="Blocks-elements">
+      <span class="Blocks-labels">Noeud:</span>
+      <span>{{ block.node }}</span>
+    </div>
+    <div class="Blocks-elements">
       <span class="Blocks-labels">Hash:</span>
       <span class="Blocks-items">{{ block.hash }}</span>
     </div>

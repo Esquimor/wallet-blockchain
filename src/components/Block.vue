@@ -10,6 +10,10 @@
       <span>{{ block.difficulty }}</span>
     </div>
     <div class="Block-elements">
+      <span class="Block-labels">Noeud:</span>
+      <span>{{ block.node }}</span>
+    </div>
+    <div class="Block-elements">
       <span class="Block-labels">Hash:</span>
       <span class="Block-items">{{ block.hash }}</span>
     </div>
@@ -34,7 +38,7 @@
           <template v-if="txIn.txOutId !=''">
             <div class="Block-transactions-items-elements">
               <span class="Block-transactions-items-items">Block Hash:</span>
-              <span>{{ txIn.txOutId }}</span>
+              <span @click="$emit('change', txIn.txOutId)">{{ txIn.txOutId }}</span>
             </div>
             <div class="Block-transactions-items-elements">
               <span class="Block-transactions-items-items">Transaction:</span>
