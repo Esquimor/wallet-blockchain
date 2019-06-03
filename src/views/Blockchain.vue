@@ -4,10 +4,18 @@
       <h2 class="title is-3">Filtres</h2>
       <div class="Blockchain-filter-fields columns">
         <BField label="Envoyeur" class="column is-6">
-          <BInput v-model="filter.sender"/>
+          <BInput v-model="sender"/>
         </BField>
         <BField label="Receveur" class="column is-6">
-          <BInput v-model="filter.receiver"/>
+          <BInput v-model="receiver"/>
+        </BField>
+      </div>
+      <div class="Blockchain-filter-fields columns">
+        <BField label="Node" class="column is-6">
+          <BInput v-model="node"/>
+        </BField>
+        <BField label="Block Hash" class="column is-6">
+          <BInput v-model="hash"/>
         </BField>
       </div>
     </div>
@@ -67,62 +75,67 @@ export default {
       giveAddress: false,
       errorMsg: "",
       chain: [],
-      filter: {
-        sender: "",
-        receiver: ""
-      },
+      sender: "",
+      receiver: "",
+      node: "",
+      hash: "",
       block: null
     };
   },
   computed: {
+    filterByReceiverAndSender() {
+      return this.chain.filter(block => {
+        if (block.index === 0 && this.sender === "" && this.receiver === "")
+          return true;
+        const filterTxOut = (txOuts, address) => {
+          return txOuts.some(txOut => txOut.address === address);
+        };
+        const filterTransaction = (
+          transactions,
+          addressSender,
+          addressReceiver
+        ) => {
+          return transactions.some(transaction => {
+            const hasTxOut =
+              addressReceiver === ""
+                ? addressSender === ""
+                  ? true
+                  : false
+                : filterTxOut(transaction.txOuts, addressReceiver);
+            const hasTxIn =
+              addressSender === ""
+                ? addressReceiver === ""
+                  ? true
+                  : false
+                : transaction.txIns.some(txIn => {
+                    const blockSender = this.chain.find(
+                      block2 => block2.index === txIn.txOutId
+                    );
+                    return (
+                      !!blockSender &&
+                      filterTxOut(blockSender.txOuts, addressSender)
+                    );
+                  });
+            return hasTxOut || hasTxIn;
+          });
+        };
+        return filterTransaction(
+          block.transactions,
+          this.sender,
+          this.receiver
+        );
+      });
+    },
     listChain() {
-      return this.chain
-        .filter(block => {
-          if (
-            block.index === 0 &&
-            this.filter.sender === "" &&
-            this.filter.receiver === ""
-          )
-            return true;
-          const filterTxOut = (txOuts, address) => {
-            return txOuts.some(txOut => txOut.address === address);
-          };
-          const filterTransaction = (
-            transactions,
-            addressSender,
-            addressReceiver
-          ) => {
-            return transactions.some(transaction => {
-              const hasTxOut =
-                addressReceiver === ""
-                  ? addressSender === ""
-                    ? true
-                    : false
-                  : filterTxOut(transaction.txOuts, addressReceiver);
-              const hasTxIn =
-                addressSender === ""
-                  ? addressReceiver === ""
-                    ? true
-                    : false
-                  : transaction.txIns.some(txIn => {
-                      const blockSender = this.chain.find(
-                        block2 => block2.index === txIn.txOutId
-                      );
-                      return (
-                        !!blockSender &&
-                        filterTxOut(blockSender.txOuts, addressSender)
-                      );
-                    });
-              return hasTxOut || hasTxIn;
-            });
-          };
-          return filterTransaction(
-            block.transactions,
-            this.filter.sender,
-            this.filter.receiver
-          );
-        })
-        .reverse();
+      let newChain = [];
+      newChain = this.filterByReceiverAndSender;
+      if (this.node !== "") {
+        newChain = newChain.filter(b => b.node == this.node);
+      }
+      if (this.hash !== "") {
+        newChain = newChain.filter(b => b.hash == this.hash);
+      }
+      return newChain.sort((a, b) => b.index - a.index);
     },
     listNode() {
       return this.chain.reduce((tab, block) => {
@@ -132,6 +145,12 @@ export default {
         }
         return tab;
       }, []);
+    },
+    listBlockHash() {
+      return this.chain.reduce((tab, block) => {
+        tab.push(block.hash);
+        return tab;
+      }, tab);
     }
   },
   methods: {
@@ -205,13 +224,13 @@ export default {
 .Blockchain {
   display: grid;
   grid-template:
-    "filter filter" 12rem
+    "filter filter" 17rem
     "chain   block" auto /
     40% 60%;
   width: 100%;
   height: 100%;
   &-filter {
-    background-color: #aed581;
+    box-shadow: 0 4px 6px 0 hsla(0, 0%, 0%, 0.2);
     padding: 1rem;
     grid-area: filter;
   }
