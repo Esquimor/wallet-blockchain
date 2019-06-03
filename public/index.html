@@ -4,8 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="https://cdn.materialdesignicons.com/3.5.95/css/materialdesignicons.min.css">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>wallet-blockchain</title>
+    <meta name="google-signin-client_id" content="449962804508-uqtd5pi2je3rot74e907cq739bga4sce.apps.googleusercontent.com">
   </head>
   <body>
     <noscript>
@@ -13,5 +15,16 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script><script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId            : '1137915973065889',
+          autoLogAppEvents : true,
+          xfbml            : true,
+          version          : 'v3.3'
+        });
+      };
+    </script>
+    <script async defer src="https://connect.facebook.net/fr_FR/sdk.js"></script>
   </body>
 </html>

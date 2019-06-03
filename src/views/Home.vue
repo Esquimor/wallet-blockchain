@@ -1,271 +1,52 @@
 <template>
   <div class="Home">
-    <div class="Home-filter">
-      <h2 class="title is-3">Filtres</h2>
-      <div class="Home-filter-fields columns">
-        <BField label="Envoyeur" class="column is-6">
-          <BInput v-model="filter.sender"/>
-        </BField>
-        <BField label="Receveur" class="column is-6">
-          <BInput v-model="filter.receiver"/>
-        </BField>
-      </div>
-    </div>
-    <div class="Home-chain">
-      <template v-if="listChain.length > 0">
-        <Blocks
-          v-for="block in listChain"
-          :key="block.index"
-          :block="block"
-          @click.native="chooseBlock(block)"
-        />
-      </template>
-      <div v-else>Aucun Block dans la chaine</div>
-    </div>
-    <div v-if="block !== null">
-      <Block class="Home-block" :block="block" @change="hash => chooseBlockHash(hash)"/>
-    </div>
-    <div class="Home-block-no" v-else>Aucun Block séléctionner</div>
-    <div class="Home-address" v-if="giveAddress">
-      <div class="Home-address-background"/>
-      <div class="Home-address-modal">
-        <h2 class="title is-5">Adresse du noeud</h2>
-        <span v-if="errorMsg !== ''" class="has-text-danger">{{ errorMsg }}</span>
-        <BInput ref="websocketInput" type="text" @input="removeError"/>
-        <div class="Home-address-modal-button">
-          <button @click="giveAddress = false" class="button is-danger outline">Annuler</button>
-          <button @click="changeSocket" class="button is-primary">Confirmer</button>
-        </div>
-      </div>
-    </div>
+    <section class="Home-head"></section>
+    <section class="Home-title">
+      <h1 class="title is-1">SupBank</h1>
+    </section>
+    <section class="Home-description">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus lacinia leo lacus, sed convallis turpis sagittis vitae. Aliquam erat volutpat. Etiam sed lectus volutpat, pretium orci sed, posuere augue. Fusce aliquet enim in fringilla venenatis. Donec aliquet neque et justo tristique dapibus. Aliquam fermentum sapien in molestie ullamcorper. Maecenas a libero sed eros malesuada egestas. Nullam non ullamcorper nisl. Integer vel lacus at diam semper consequat at eget diam. Phasellus dictum odio diam, non fermentum mauris faucibus sed. Praesent porttitor orci hendrerit ultrices rhoncus. Duis aliquet vestibulum quam id ullamcorper. Nam faucibus ligula sed diam ullamcorper condimentum.</p>
+      <p>Mauris vitae velit eros. Donec non lacinia ipsum, quis euismod dolor. Mauris interdum odio ante, id porttitor arcu sodales quis. Mauris augue neque, facilisis vestibulum posuere eget, volutpat mattis odio. Morbi blandit enim quis ante vulputate tincidunt. Sed iaculis luctus elementum. Curabitur leo ante, pellentesque vel nibh nec, placerat fringilla lacus. Morbi vitae libero in justo iaculis faucibus in in metus. Vivamus bibendum eros bibendum finibus luctus.</p>
+      <p>Maecenas vel neque at nunc gravida vestibulum. Sed ipsum justo, rutrum et sapien sed, dapibus feugiat mauris. Suspendisse tortor augue, mollis eu volutpat quis, dictum a lorem. Nulla enim ex, scelerisque nec vehicula vitae, tristique eget libero. Ut id fermentum lectus, sed convallis est. Mauris sodales eros non consectetur consequat. Suspendisse eleifend felis eget augue tempor, ac blandit justo pharetra.</p>
+      <p>Integer vel convallis metus. Nulla et dignissim orci. Vestibulum congue dui quis ultricies laoreet. Suspendisse interdum tellus arcu, sollicitudin iaculis erat auctor et. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras scelerisque est risus, eu mattis dolor dignissim quis. Sed sed egestas nulla, non pharetra justo. Proin malesuada sodales ante a euismod.</p>
+      <p>In eu suscipit risus. Aliquam convallis sodales nunc, non bibendum sapien laoreet ut. Maecenas sit amet risus ipsum. Morbi congue vestibulum libero nec egestas. Nulla a finibus ligula. Etiam eleifend ac ligula ac semper. Maecenas consequat nisi vel risus dignissim semper. Nullam ultricies nibh augue, in blandit velit molestie non. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ac quam neque. Maecenas eu egestas lacus. Aenean ut sollicitudin erat.</p>
+    </section>
   </div>
 </template>
 
 <script>
 "use strict";
 
-import axios from "axios";
-
-import Blocks from "@/components/Blocks";
-import Block from "@/components/Block";
-
-const MessageType = {
-  QUERY_LATEST: 0,
-  QUERY_ALL: 1,
-  RESPONSE_BLOCKCHAIN: 2
-};
-
 export default {
-  name: "PageHome",
-  components: {
-    Blocks,
-    Block
-  },
-  data() {
-    return {
-      wsAddress: "http://localhost:8001",
-      giveAddress: false,
-      errorMsg: "",
-      chain: [],
-      filter: {
-        sender: "",
-        receiver: ""
-      },
-      block: null
-    };
-  },
-  computed: {
-    listChain() {
-      return this.chain
-        .filter(block => {
-          if (
-            block.index === 0 &&
-            this.filter.sender === "" &&
-            this.filter.receiver === ""
-          )
-            return true;
-          const filterTxOut = (txOuts, address) => {
-            return txOuts.some(txOut => txOut.address === address);
-          };
-          const filterTransaction = (
-            transactions,
-            addressSender,
-            addressReceiver
-          ) => {
-            return transactions.some(transaction => {
-              const hasTxOut =
-                addressReceiver === ""
-                  ? addressSender === ""
-                    ? true
-                    : false
-                  : filterTxOut(transaction.txOuts, addressReceiver);
-              const hasTxIn =
-                addressSender === ""
-                  ? addressReceiver === ""
-                    ? true
-                    : false
-                  : transaction.txIns.some(txIn => {
-                      const blockSender = this.chain.find(
-                        block2 => block2.index === txIn.txOutId
-                      );
-                      return (
-                        !!blockSender &&
-                        filterTxOut(blockSender.txOuts, addressSender)
-                      );
-                    });
-              return hasTxOut || hasTxIn;
-            });
-          };
-          return filterTransaction(
-            block.transactions,
-            this.filter.sender,
-            this.filter.receiver
-          );
-        })
-        .reverse();
-    },
-    listNode() {
-      return this.chain.reduce((tab, block) => {
-        const tabHasNode = tab.some(t => t === block.node);
-        if (!tabHasNode) {
-          tab.push(block.node);
-        }
-        return tab;
-      }, []);
-    }
-  },
-  methods: {
-    changeSocket() {
-      this.wsAddress = this.$refs.websocketInput.newValue;
-    },
-    removeError() {
-      if (this.errorMsg !== "") {
-        this.errorMsg = "";
-      }
-    },
-    chooseBlock(block) {
-      this.block = block;
-    },
-    chooseBlockHash(hash) {
-      this.block = this.chain.find(b => b.hash === hash);
-    }
-  },
-  watch: {
-    wsAddress: {
-      immediate: true,
-      handler(ws) {
-        if (ws !== "") {
-          axios
-            .post(`${ws}/addPeer`, {
-              peer: `ws://${window.location.hostname}:${window.location.port}`
-            })
-            .then(({ data }) => {
-              this.giveAddress = false;
-              const ws = new WebSocket(`ws://localhost:${data.p2p}`);
-              ws.onerror = () => {
-                this.giveAddress = true;
-                this.wsAddress = "";
-                this.errorMsg = "L'adresse spécifié n'est plus joignable.";
-              };
-              ws.onmessage = e => {
-                const data = JSON.parse(e.data);
-                let element;
-                switch (data.type) {
-                  case MessageType.QUERY_ALL:
-                    element = JSON.parse(data.data);
-                    this.chain = element;
-                    break;
-                  case MessageType.RESPONSE_BLOCKCHAIN:
-                  case MessageType.QUERY_LATEST:
-                    element = JSON.parse(data.data);
-                    if (this.chain.length === 0) {
-                      this.chain = element;
-                    } else {
-                      this.chain = this.chain.concat(element);
-                    }
-                    break;
-                }
-              };
-            })
-            .catch(() => {
-              this.giveAddress = true;
-              this.wsAddress = "";
-              this.errorMsg = "L'adresse spécifié n'est pas joignable.";
-            });
-        }
-      }
-    }
-  }
+  name: "Home"
 };
 </script>
 
 <style lang="scss">
-@import "../style/buefy.scss";
-
 .Home {
-  display: grid;
-  grid-template:
-    "filter filter" 12rem
-    "chain   block" auto /
-    40% 60%;
-  width: 100%;
-  height: 100%;
-  &-filter {
-    background-color: #aed581;
-    padding: 1rem;
-    grid-area: filter;
+  &-head {
+    width: 100%;
+    height: 75vh;
+    background-image: url("https://bitcoinist.com/wp-content/uploads/2017/05/ai-cryptocurrency-cover.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    opacity: 0.2;
   }
-  &-chain {
-    grid-area: chain;
-  }
-  &-block {
-    grid-area: block;
-    position: sticky;
-    top: 20px;
-    &-no {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-    }
-  }
-  &-address {
+  &-title {
+    position: absolute;
+    top: 3rem;
+    left: 0px;
+    width: 100%;
+    height: 75vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    &-modal {
-      background-color: $white;
-      z-index: 150;
-      width: 350px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border: 2px solid gray;
-      padding: 2rem;
-      &-button {
-        margin-top: 1rem;
-        display: flex;
-        justify-content: flex-end;
-        > button {
-          margin-left: 20px;
-        }
-      }
-    }
-    &-background {
-      position: fixed;
-      top: 0px;
-      left: 0px;
-      opacity: 0.2;
-      background-color: $light-grey;
-      width: 100%;
-      height: 100%;
-      z-index: 100;
+  }
+  &-description {
+    padding: 2rem 20%;
+    > p {
+      margin-top: 1rem;
     }
   }
 }
