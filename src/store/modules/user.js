@@ -9,6 +9,37 @@ export default {
     user: state => state.user
   },
   actions: {
+    editUser({ commit, state }, { pseudonyme, email }) {
+      return api
+        .post("user/edit/account", {
+          id: state.user.id,
+          pseudonyme,
+          email
+        })
+        .then(() => {
+          commit(types.EDIT_USER, {
+            email,
+            pseudonyme
+          });
+        })
+        .catch(e => {
+          return Promise.reject(e);
+        });
+    },
+    register({ commit }, { email, password, confirmation }) {
+      return api
+        .post("user/register/email", {
+          email,
+          password,
+          confirmation
+        })
+        .then(({ data }) => {
+          commit(types.LOGIN, data.user);
+        })
+        .catch(e => {
+          return Promise.reject(e);
+        });
+    },
     logout({ commit }) {
       commit(types.LOGOUT);
     },
@@ -86,6 +117,12 @@ export default {
     },
     [types.LOGOUT](state) {
       state.user = null;
+    },
+    [types.EDIT_USER](state, { email, pseudonyme }) {
+      state.user = Object.assign({}, state.user, {
+        email: email,
+        pseudonyme: pseudonyme
+      });
     }
   }
 };

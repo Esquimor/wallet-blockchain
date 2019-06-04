@@ -7,15 +7,16 @@
       <section class="modal-card-body SupBandModal">
         <span class="has-text-danger SupBandModal-error" v-if="errorMsg !== ''">{{ errorMsg }}</span>
         <b-field label="Email">
-          <b-input type="email" v-model="email" placeholder="Your email" required></b-input>
+          <b-input type="email" v-model="email" placeholder="Email" required @input="removeErrror"></b-input>
         </b-field>
-        <b-field label="Password">
+        <b-field label="Mot de passe">
           <b-input
             type="password"
             v-model="password"
             password-reveal
-            placeholder="Your password"
+            placeholder="Mot de passe"
             required
+            @input="removeErrror"
           ></b-input>
         </b-field>
       </section>
@@ -53,6 +54,9 @@ export default {
           this.password = "";
           this.errorMsg = "Une erreur est survenue. Merci de réessayer.";
         });
+    },
+    removeErrror() {
+      if (this.errorMsg !== "") this.errorMsg = "";
     }
   }
 };

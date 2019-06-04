@@ -53,6 +53,7 @@
 "use strict";
 
 import axios from "axios";
+import { mapGetters } from "vuex";
 
 import Blocks from "@/components/Blocks";
 import Block from "@/components/Block";
@@ -83,6 +84,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["user"]),
     filterByReceiverAndSender() {
       return this.chain.filter(block => {
         if (block.index === 0 && this.sender === "" && this.receiver === "")
@@ -168,6 +170,9 @@ export default {
     chooseBlockHash(hash) {
       this.block = this.chain.find(b => b.hash === hash);
     }
+  },
+  mounted() {
+    if (!this.user) this.$router.push({ name: "home" });
   },
   watch: {
     wsAddress: {

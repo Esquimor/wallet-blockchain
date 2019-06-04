@@ -9,9 +9,15 @@
 <script>
 "use strict";
 
+import { mapGetters } from "vuex";
+
 export default {
   name: "Logout",
+  computed: {
+    ...mapGetters(["user"])
+  },
   mounted() {
+    if (!this.user) this.$router.push({ name: "home" });
     this.$store.dispatch("logout");
   }
 };

@@ -8,6 +8,9 @@
       <ButtonGoogle class="Login-buttons-button" @connect="connectGoogle"/>
       <ButtonFacebook class="Login-buttons-button" @connect="connectFacebook"/>
     </div>
+    <div classs="Login-register">
+      <router-link :to="{ name: 'register'}">Pas encore de compte ? Enregistrer vous ici.</router-link>
+    </div>
   </div>
 </template>
 
@@ -17,6 +20,8 @@
 import ButtonFacebook from "@/components/ButtonFacebook";
 import ButtonGoogle from "@/components/ButtonGoogle";
 import ButtonSupBank from "@/components/ButtonSupBank";
+
+import { mapGetters } from "vuex";
 
 export default {
   name: "Login",
@@ -40,8 +45,7 @@ export default {
         .then(() => {
           this.$router.push({ name: "profile" });
         })
-        .catch(e => {
-          console.log(e);
+        .catch(() => {
           this.errorMsg = "Une erreur est survenue, merci de réessayer";
         });
     },
@@ -53,8 +57,7 @@ export default {
         .then(() => {
           this.$router.push({ name: "profile" });
         })
-        .catch(e => {
-          console.log(e);
+        .catch(() => {
           this.errorMsg = "Une erreur est survenue, merci de réessayer";
         });
     },
@@ -71,6 +74,12 @@ export default {
           this.errorMsg = "Une erreur est survenue, merci de réessayer";
         });
     }
+  },
+  computed: {
+    ...mapGetters(["user"])
+  },
+  mounted() {
+    if (!!this.user) this.$router.push({ name: "home" });
   }
 };
 </script>
@@ -85,9 +94,14 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-bottom: 10px;
     &-button {
       margin-top: 20px;
       width: 400px;
+    }
+  }
+  &-register {
+    > a {
     }
   }
 }
