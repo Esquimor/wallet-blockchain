@@ -69,8 +69,7 @@ export default {
         .then(() => {
           this.$router.push({ name: "profile" });
         })
-        .catch(e => {
-          console.log(e);
+        .catch(() => {
           this.errorMsg = "Une erreur est survenue, merci de réessayer";
         });
     }
@@ -98,10 +97,6 @@ export default {
     &-button {
       margin-top: 20px;
       width: 400px;
-    }
-  }
-  &-register {
-    > a {
     }
   }
 }

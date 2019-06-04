@@ -7,6 +7,8 @@
         <span class="Profile-labels">{{ user.pseudonyme }}</span>
         <span class="Profile-elements">Email:</span>
         <span class="Profile-labels">{{ user.email }}</span>
+        <span class="Profile-elements">Clef public:</span>
+        <span class="Profile-labels">{{ user.public_key }}</span>
         <span class="Profile-elements">Crédit:</span>
         <span class="Profile-labels">{{ user.amount }}</span>
         <BButton type="is-primary" @click.native="openEdit = true">Editer votre compte</BButton>
@@ -85,8 +87,6 @@ export default {
     margin-top: 50px;
     display: flex;
     flex-direction: column;
-    &-title {
-    }
     &-buttons {
       margin-bottom: 10px;
     }
