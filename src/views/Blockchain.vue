@@ -171,9 +171,6 @@ export default {
       this.block = this.chain.find(b => b.hash === hash);
     }
   },
-  mounted() {
-    if (!this.user) this.$router.push({ name: "home" });
-  },
   watch: {
     wsAddress: {
       immediate: true,

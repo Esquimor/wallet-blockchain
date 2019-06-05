@@ -25,6 +25,7 @@ export default {
 <style lang="scss">
 .Home {
   &-head {
+    left: 20%;
     width: 100%;
     height: 75vh;
     background-image: url("https://bitcoinist.com/wp-content/uploads/2017/05/ai-cryptocurrency-cover.jpg");
@@ -36,7 +37,7 @@ export default {
   &-title {
     position: absolute;
     top: 3rem;
-    left: 0px;
+    left: 20%;
     width: 100%;
     height: 75vh;
     display: flex;

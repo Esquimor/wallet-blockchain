@@ -1,18 +1,16 @@
 <template>
-  <div id="app">
+  <div id="app" class="App">
     <nav class="App-nav">
-      <div class="App-nav-right">
-        <router-link :to="{ name: 'home' }">Home</router-link>
-        <router-link :to="{ name: 'blockchain' }" v-if="hasUser">Blockchain</router-link>
-        <router-link :to="{ name: 'profile' }" v-if="hasUser">Profile</router-link>
-      </div>
-      <div class="App-nav-left">
-        <router-link :to="{ name: 'login' }" v-if="!hasUser">Login</router-link>
-        <router-link :to="{ name: 'register' }" v-if="!hasUser">Register</router-link>
-        <router-link :to="{ name: 'logout' }" v-if="hasUser">Logout</router-link>
-      </div>
+      <router-link :to="{ name: 'home' }">Accueil</router-link>
+      <router-link :to="{ name: 'blockchain' }">Blockchain</router-link>
+      <router-link :to="{ name: 'profile' }" v-if="hasUser">Profile</router-link>
+      <router-link :to="{ name: 'login' }" v-if="!hasUser">Se connecter</router-link>
+      <router-link :to="{ name: 'register' }" v-if="!hasUser">S'enregistrer</router-link>
+      <router-link :to="{ name: 'logout' }" v-if="hasUser">Se déconnecter</router-link>
     </nav>
-    <router-view/>
+    <div class="App-main">
+      <router-view/>
+    </div>
   </div>
 </template>
 
@@ -35,24 +33,27 @@ export default {
 
 <style lang="scss">
 .App {
+  display: flex;
+  width: 100vw;
   &-nav {
+    top: 0px;
+    position: sticky;
+    height: 100vh;
+    width: 20%;
     display: flex;
-    justify-content: space-between;
-    background-color: $primary;
-    height: 3rem;
-    padding-top: 0.5rem;
-    &-left,
-    &-right {
-      > a {
-        padding: 1rem;
-        width: 200px;
+    flex-direction: column;
+    background-color: $black;
+    > a {
+      padding: 1rem;
+      color: $white;
+      &:hover {
+        background-color: $primary;
         color: $white;
-        &:hover {
-          background-color: $primary-dark;
-          color: $white;
-        }
       }
     }
+  }
+  &-main {
+    width: 80%;
   }
 }
 </style>

@@ -8,7 +8,7 @@
         <span class="Profile-elements">Email:</span>
         <span class="Profile-labels">{{ user.email }}</span>
         <span class="Profile-elements">Clef public:</span>
-        <span class="Profile-labels">{{ user.public_key }}</span>
+        <span class="Profile-labels Profile-publicKey">{{ user.public_key }}</span>
         <span class="Profile-elements">Crédit:</span>
         <span class="Profile-labels">{{ user.amount }}</span>
         <BButton type="is-primary" @click.native="openEdit = true">Editer votre compte</BButton>
@@ -20,9 +20,9 @@
     <section class="Profile-rs">
       <h3 class="Profile-rs-title title is-5">Liéer votre compte avec les réseaux sociaux:</h3>
       <ButtonGoogle class="Profile-rs-buttons" v-if="!user.google" @connect="linkGoogle"/>
-      <span v-else>Votre compte est déjà reliéer à un compte Google.</span>
+      <span v-else>Votre compte est déjà relié à un compte Google.</span>
       <ButtonFacebook class="Profile-rs-buttons" v-if="!user.facebook" @connect="linkFacebook"/>
-      <span v-else>Votre compte est déjà reliéer à un compte Facebook.</span>
+      <span v-else>Votre compte est déjà relié à un compte Facebook.</span>
     </section>
   </div>
 </template>
@@ -76,6 +76,9 @@ export default {
     margin-right: 20px;
     margin-top: 10px;
     font-weight: 800;
+  }
+  &-publicKey {
+    word-break: break-all;
   }
   &-account {
     &-field {
