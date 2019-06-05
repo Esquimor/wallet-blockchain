@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="App">
     <nav class="App-nav">
+      <img src="@/assets/Logo.png">
       <router-link :to="{ name: 'home' }">Accueil</router-link>
       <router-link :to="{ name: 'blockchain' }">Blockchain</router-link>
       <router-link :to="{ name: 'profile' }" v-if="hasUser">Profile</router-link>
@@ -110,7 +111,7 @@ export default {
     top: 0px;
     position: sticky;
     height: 100vh;
-    width: 20%;
+    width: 200px;
     display: flex;
     flex-direction: column;
     background-color: $black;
@@ -124,7 +125,7 @@ export default {
     }
   }
   &-main {
-    width: 80%;
+    width: calc(100% - 200px);
   }
   &-address {
     display: flex;

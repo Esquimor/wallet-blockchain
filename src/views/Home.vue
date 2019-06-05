@@ -1,9 +1,6 @@
 <template>
   <div class="Home">
     <section class="Home-head"></section>
-    <section class="Home-title">
-      <h1 class="title is-1">SupBank</h1>
-    </section>
     <section class="Home-description">
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus lacinia leo lacus, sed convallis turpis sagittis vitae. Aliquam erat volutpat. Etiam sed lectus volutpat, pretium orci sed, posuere augue. Fusce aliquet enim in fringilla venenatis. Donec aliquet neque et justo tristique dapibus. Aliquam fermentum sapien in molestie ullamcorper. Maecenas a libero sed eros malesuada egestas. Nullam non ullamcorper nisl. Integer vel lacus at diam semper consequat at eget diam. Phasellus dictum odio diam, non fermentum mauris faucibus sed. Praesent porttitor orci hendrerit ultrices rhoncus. Duis aliquet vestibulum quam id ullamcorper. Nam faucibus ligula sed diam ullamcorper condimentum.</p>
       <p>Mauris vitae velit eros. Donec non lacinia ipsum, quis euismod dolor. Mauris interdum odio ante, id porttitor arcu sodales quis. Mauris augue neque, facilisis vestibulum posuere eget, volutpat mattis odio. Morbi blandit enim quis ante vulputate tincidunt. Sed iaculis luctus elementum. Curabitur leo ante, pellentesque vel nibh nec, placerat fringilla lacus. Morbi vitae libero in justo iaculis faucibus in in metus. Vivamus bibendum eros bibendum finibus luctus.</p>
@@ -27,22 +24,10 @@ export default {
   &-head {
     left: 20%;
     width: 100%;
-    height: 75vh;
-    background-image: url("https://bitcoinist.com/wp-content/uploads/2017/05/ai-cryptocurrency-cover.jpg");
+    height: 100vh;
+    background-image: url("/Logo2.png");
     background-repeat: no-repeat;
-    background-attachment: fixed;
     background-position: center;
-    opacity: 0.2;
-  }
-  &-title {
-    position: absolute;
-    top: 3rem;
-    left: 20%;
-    width: 100%;
-    height: 75vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
   &-description {
     padding: 2rem 20%;
