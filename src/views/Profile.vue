@@ -10,7 +10,7 @@
         <span class="Profile-elements">Clef public:</span>
         <span class="Profile-labels Profile-publicKey">{{ user.public_key }}</span>
         <span class="Profile-elements">Crédit:</span>
-        <span class="Profile-labels">{{ user.amount }}</span>
+        <span class="Profile-labels">{{ getAmount(user.public_key) }}</span>
         <BButton
           type="is-primary"
           class="Profile-buttons"
@@ -46,7 +46,6 @@ import { mapGetters } from "vuex";
 
 import ButtonFacebook from "@/components/ButtonFacebook";
 import ButtonGoogle from "@/components/ButtonGoogle";
-import ButtonSupBank from "@/components/ButtonSupBank";
 import EditModalAccount from "@/components/EditModalAccount";
 import EditModalPassword from "@/components/EditModalPassword";
 
@@ -55,7 +54,6 @@ export default {
   components: {
     ButtonFacebook,
     ButtonGoogle,
-    ButtonSupBank,
     EditModalPassword,
     EditModalAccount
   },
@@ -66,7 +64,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["user"])
+    ...mapGetters(["user", "getAmount"])
   },
   methods: {
     linkGoogle(googleId) {

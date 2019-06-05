@@ -11,11 +11,17 @@
         </BField>
       </div>
       <div class="Blockchain-filter-fields columns">
-        <BField label="Node" class="column is-6">
-          <BInput v-model="node"/>
+        <BField label="Node" class="column is-6 Blockchain-filter-fields-select">
+          <BSelect v-model="node">
+            <option value></option>
+            <option v-for="node in listNode" :value="node" :key="node.item">{{ node }}</option>
+          </BSelect>
         </BField>
-        <BField label="Block Hash" class="column is-6">
-          <BInput v-model="hash"/>
+        <BField label="Block Hash" class="column is-6 Blockchain-filter-fields-select">
+          <BSelect v-model="hash">
+            <option value></option>
+            <option v-for="hash in listBlockHash" :value="hash" :key="hash.item">{{ hash }}</option>
+          </BSelect>
         </BField>
       </div>
     </div>
@@ -28,41 +34,22 @@
           @click.native="chooseBlock(block)"
         />
       </template>
-      <div v-else>Aucun Block dans la chaine</div>
+      <div v-else class="Blockchain-chain-no">Aucun Block dans la chaine</div>
     </div>
     <div v-if="block !== null">
       <Block class="Blockchain-block" :block="block" @change="hash => chooseBlockHash(hash)"/>
     </div>
     <div class="Blockchain-block-no" v-else>Aucun Block séléctionner</div>
-    <div class="Blockchain-address" v-if="giveAddress">
-      <div class="Blockchain-address-background"/>
-      <div class="Blockchain-address-modal">
-        <h2 class="title is-5">Adresse du noeud</h2>
-        <span v-if="errorMsg !== ''" class="has-text-danger">{{ errorMsg }}</span>
-        <BInput ref="websocketInput" type="text" @input="removeError"/>
-        <div class="Blockchain-address-modal-button">
-          <button @click="giveAddress = false" class="button is-danger outline">Annuler</button>
-          <button @click="changeSocket" class="button is-primary">Confirmer</button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 "use strict";
 
-import axios from "axios";
 import { mapGetters } from "vuex";
 
 import Blocks from "@/components/Blocks";
 import Block from "@/components/Block";
-
-const MessageType = {
-  QUERY_LATEST: 0,
-  QUERY_ALL: 1,
-  RESPONSE_BLOCKCHAIN: 2
-};
 
 export default {
   name: "Blockchain",
@@ -72,10 +59,6 @@ export default {
   },
   data() {
     return {
-      wsAddress: "http://localhost:8001",
-      giveAddress: false,
-      errorMsg: "",
-      chain: [],
       sender: "",
       receiver: "",
       node: "",
@@ -84,13 +67,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["user"]),
+    ...mapGetters(["user", "chain"]),
     filterByReceiverAndSender() {
       return this.chain.filter(block => {
         if (block.index === 0 && this.sender === "" && this.receiver === "")
           return true;
         const filterTxOut = (txOuts, address) => {
-          return txOuts.some(txOut => txOut.address === address);
+          return txOuts.some(txOut => txOut.address.startsWith(address));
         };
         const filterTransaction = (
           transactions,
@@ -152,7 +135,7 @@ export default {
       return this.chain.reduce((tab, block) => {
         tab.push(block.hash);
         return tab;
-      }, tab);
+      }, []);
     }
   },
   methods: {
@@ -169,52 +152,6 @@ export default {
     },
     chooseBlockHash(hash) {
       this.block = this.chain.find(b => b.hash === hash);
-    }
-  },
-  watch: {
-    wsAddress: {
-      immediate: true,
-      handler(ws) {
-        if (ws !== "") {
-          axios
-            .post(`${ws}/addPeer`, {
-              peer: `ws://${window.location.hostname}:${window.location.port}`
-            })
-            .then(({ data }) => {
-              this.giveAddress = false;
-              const ws = new WebSocket(`ws://localhost:${data.p2p}`);
-              ws.onerror = () => {
-                this.giveAddress = true;
-                this.wsAddress = "";
-                this.errorMsg = "L'adresse spécifié n'est plus joignable.";
-              };
-              ws.onmessage = e => {
-                const data = JSON.parse(e.data);
-                let element;
-                switch (data.type) {
-                  case MessageType.QUERY_ALL:
-                    element = JSON.parse(data.data);
-                    this.chain = element;
-                    break;
-                  case MessageType.RESPONSE_BLOCKCHAIN:
-                  case MessageType.QUERY_LATEST:
-                    element = JSON.parse(data.data);
-                    if (this.chain.length === 0) {
-                      this.chain = element;
-                    } else {
-                      this.chain = this.chain.concat(element);
-                    }
-                    break;
-                }
-              };
-            })
-            .catch(() => {
-              this.giveAddress = true;
-              this.wsAddress = "";
-              this.errorMsg = "L'adresse spécifié n'est pas joignable.";
-            });
-        }
-      }
     }
   }
 };
@@ -235,9 +172,24 @@ export default {
     box-shadow: 0 4px 6px 0 hsla(0, 0%, 0%, 0.2);
     padding: 1rem;
     grid-area: filter;
+    &-fields-select {
+      > .control > span {
+        width: 100%;
+        > select {
+          width: 100%;
+        }
+      }
+    }
   }
   &-chain {
     grid-area: chain;
+    &-no {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin-top: 50px;
+    }
   }
   &-block {
     grid-area: block;
@@ -248,45 +200,6 @@ export default {
       justify-content: center;
       align-items: center;
       width: 100%;
-    }
-  }
-  &-address {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    &-modal {
-      background-color: $white;
-      z-index: 150;
-      width: 350px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border: 2px solid gray;
-      padding: 2rem;
-      &-button {
-        margin-top: 1rem;
-        display: flex;
-        justify-content: flex-end;
-        > button {
-          margin-left: 20px;
-        }
-      }
-    }
-    &-background {
-      position: fixed;
-      top: 0px;
-      left: 0px;
-      opacity: 0.2;
-      background-color: $light-grey;
-      width: 100%;
-      height: 100%;
-      z-index: 100;
     }
   }
 }

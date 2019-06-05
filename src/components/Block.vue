@@ -25,10 +25,10 @@
       <span class="Block-labels">Transactions:</span>
       <div
         class="Block-transactions-items"
-        v-for="(transaction, index) in block.transactions"
+        v-for="transaction in block.transactions"
         :key="transaction.index"
       >
-        <div class="Block-transactions-items-title">Transaction: {{ index }}</div>
+        <div class="Block-transactions-items-title">Transaction: {{ transaction.id }}</div>
         <div class="Block-transactions-items-txIns-title">Jetons Utilisés:</div>
         <div
           class="Block-transactions-items-txIns"
@@ -37,11 +37,11 @@
         >
           <template v-if="txIn.txOutId !=''">
             <div class="Block-transactions-items-elements">
-              <span class="Block-transactions-items-items">Block Hash:</span>
+              <span class="Block-transactions-items-items">Transaction Id:</span>
               <span @click="$emit('change', txIn.txOutId)">{{ txIn.txOutId }}</span>
             </div>
             <div class="Block-transactions-items-elements">
-              <span class="Block-transactions-items-items">Transaction:</span>
+              <span class="Block-transactions-items-items">TxOut:</span>
               <span>{{ txIn.txOutIndex }}</span>
             </div>
             <div class="Block-transactions-items-elements">
@@ -140,6 +140,7 @@ export default {
           background-color: #eeeeee;
         }
         &-title {
+          font-weight: 700;
           margin-left: 10px;
         }
       }
@@ -153,6 +154,7 @@ export default {
         }
 
         &-title {
+          font-weight: 700;
           margin-left: 10px;
         }
       }
