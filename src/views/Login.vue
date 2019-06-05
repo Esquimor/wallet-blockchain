@@ -62,7 +62,7 @@ export default {
         });
     },
     connectFacebook(idFacebook) {
-      that.$store
+      this.$store
         .dispatch("loginFacebook", {
           userId: idFacebook
         })

@@ -9,6 +9,20 @@ export default {
     user: state => state.user
   },
   actions: {
+    editPassword({ state }, { password, confirmation }) {
+      return api
+        .post("user/edit/password", {
+          id: state.user.id,
+          password,
+          confirmation
+        })
+        .then(() => {
+          return Promise.resolve();
+        })
+        .catch(e => {
+          return Promise.reject(e);
+        });
+    },
     editUser({ commit, state }, { pseudonyme, email }) {
       return api
         .post("user/edit/account", {

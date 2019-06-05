@@ -24,4 +24,7 @@ export default {
 </script>
 
 <style lang="scss">
+.Logout {
+  padding: 1rem;
+}
 </style>

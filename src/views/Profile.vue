@@ -11,9 +11,21 @@
         <span class="Profile-labels Profile-publicKey">{{ user.public_key }}</span>
         <span class="Profile-elements">Crédit:</span>
         <span class="Profile-labels">{{ user.amount }}</span>
-        <BButton type="is-primary" @click.native="openEdit = true">Editer votre compte</BButton>
+        <BButton
+          type="is-primary"
+          class="Profile-buttons"
+          @click.native="openEdit = true"
+        >Editer votre compte</BButton>
+        <BButton
+          type="is-primary"
+          class="Profile-buttons"
+          @click.native="openEditPasswod = true"
+        >Editer votre mot de passe</BButton>
         <BModal :active="openEdit" has-modal-card :can-cancel="false">
           <EditModalAccount @close="openEdit= false" :user="user"/>
+        </BModal>
+        <BModal :active="openEditPasswod" has-modal-card :can-cancel="false">
+          <EditModalPassword @close="openEditPasswod= false"/>
         </BModal>
       </div>
     </section>
@@ -36,6 +48,7 @@ import ButtonFacebook from "@/components/ButtonFacebook";
 import ButtonGoogle from "@/components/ButtonGoogle";
 import ButtonSupBank from "@/components/ButtonSupBank";
 import EditModalAccount from "@/components/EditModalAccount";
+import EditModalPassword from "@/components/EditModalPassword";
 
 export default {
   name: "Profile",
@@ -43,11 +56,13 @@ export default {
     ButtonFacebook,
     ButtonGoogle,
     ButtonSupBank,
+    EditModalPassword,
     EditModalAccount
   },
   data() {
     return {
-      openEdit: false
+      openEdit: false,
+      openEditPasswod: false
     };
   },
   computed: {
@@ -79,6 +94,9 @@ export default {
   }
   &-publicKey {
     word-break: break-all;
+  }
+  &-buttons {
+    margin-top: 25px;
   }
   &-account {
     &-field {

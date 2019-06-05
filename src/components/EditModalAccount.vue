@@ -14,8 +14,8 @@
         </b-field>
       </section>
       <footer class="modal-card-foot">
-        <button class="button" type="button" @click="$emit('close')">Fermer</button>
-        <button class="button is-primary" @click="edit">Edit</button>
+        <button class="button" type="button" @click="$emit('close')" :disabled="loading">Fermer</button>
+        <button class="button is-primary" @click="edit" :loading="loading">Edit</button>
       </footer>
     </div>
   </form>
@@ -36,11 +36,13 @@ export default {
     return {
       pseudonyme: this.user.pseudonyme || "",
       email: this.user.email || "",
-      errorMsg: ""
+      errorMsg: "",
+      loading: false
     };
   },
   methods: {
     edit() {
+      this.loading = true;
       this.$store
         .dispatch("editUser", {
           pseudonyme: this.pseudonyme,
@@ -50,6 +52,7 @@ export default {
           this.$emit("close");
         })
         .catch(() => {
+          this.loading = false;
           this.errorMsg = "Une erreur est survenue. Merci de réessayer.";
         });
     },
