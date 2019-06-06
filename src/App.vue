@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="App">
     <nav class="App-nav">
-      <img src="@/assets/Logo.png">
+      <img src="@/assets/logo.png">
       <router-link :to="{ name: 'home' }">Accueil</router-link>
       <router-link :to="{ name: 'blockchain' }">Blockchain</router-link>
       <router-link :to="{ name: 'profile' }" v-if="hasUser">Profile</router-link>
